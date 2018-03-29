@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seemygo.server.goods.mapper.ProductSkuMapper">
+  <resultMap id="BaseResultMap" type="com.seemygo.shop.api.goods.domain.ProductSku">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="mods" jdbcType="BIGINT" property="mods" />
+    
+    <association column="product_id" javaType="com.seemygo.shop.api.goods.domain.Product" property="product" select="com.seemygo.server.goods.mapper.ProductMapper.selectByPrimaryKey" />
+  	
+  	<collection column="id" ofType="com.seemygo.shop.api.goods.domain.ProductSkuProperty" property="productSkuPropertyList" select="com.seemygo.server.goods.mapper.ProductSkuPropertyMapper.selectByProductSkuId" />
+  </resultMap>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product_sku
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyProperty="id" >
+    insert into product_sku (product_id, code, price, 
+      mods)
+    values (#{product.id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, 
+      #{mods,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" >
+    update product_sku
+    set product_id = #{product.id,jdbcType=BIGINT},
+      code = #{code,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DECIMAL},
+      mods = #{mods,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, product_id, code, price, mods
+    from product_sku
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, product_id, code, price, mods
+    from product_sku
+  </select>
+   <select id="getSkuByProductId" resultMap="BaseResultMap">
+    select id, product_id, code, price, mods
+    from product_sku where product_id = #{productId}
+  </select>
+  
+</mapper>

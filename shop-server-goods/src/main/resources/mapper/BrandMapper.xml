@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.seemygo.server.goods.mapper.BrandMapper" >
+  <resultMap id="BaseResultMap" type="com.seemygo.shop.api.goods.domain.Brand" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="last_modified_date" property="lastModifiedDate" jdbcType="TIMESTAMP" />
+    <result column="version" property="version" jdbcType="INTEGER" />
+    <result column="found_date" property="foundDate" jdbcType="TIMESTAMP" />
+    <result column="logo" property="logo" jdbcType="VARCHAR" />
+    <result column="chinese_name" property="chineseName" jdbcType="VARCHAR" />
+    <result column="english_name" property="englishName" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="sequence" property="sequence" jdbcType="INTEGER" />
+    <result column="mods" property="mods" jdbcType="BIGINT" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey"  >
+    delete from brand
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into brand (created_date, last_modified_date, 
+      version, found_date, logo, 
+      chinese_name, english_name, description, 
+      url, sequence, mods)
+    values (#{createdDate,jdbcType=TIMESTAMP}, #{lastModifiedDate,jdbcType=TIMESTAMP}, 
+      #{version,jdbcType=INTEGER}, #{foundDate,jdbcType=TIMESTAMP}, #{logo,jdbcType=VARCHAR}, 
+      #{chineseName,jdbcType=VARCHAR}, #{englishName,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{sequence,jdbcType=INTEGER}, #{mods,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" >
+    update brand
+    set created_date = #{createdDate,jdbcType=TIMESTAMP},
+      last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      version = #{version,jdbcType=INTEGER},
+      found_date = #{foundDate,jdbcType=TIMESTAMP},
+      logo = #{logo,jdbcType=VARCHAR},
+      chinese_name = #{chineseName,jdbcType=VARCHAR},
+      english_name = #{englishName,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      sequence = #{sequence,jdbcType=INTEGER},
+      mods = #{mods,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select id, created_date, last_modified_date, version, found_date, logo, chinese_name, 
+    english_name, description, url, sequence, mods
+    from brand
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, created_date, last_modified_date, version, found_date, logo, chinese_name, 
+    english_name, description, url, sequence, mods
+    from brand
+  </select>
+
+  <sql id="sql_where">
+    <where>
+      <if test="keyword != null">
+        AND (chineseName LIKE  concat("%",#{keyword},"%") OR (englishName LIKE concat("%",#{keyword},"%")
+      </if>
+    </where>
+  </sql>
+
+  <select id="queryForCount" resultType="int">
+    SELECT count(id) FROM brand <include refid="sql_where"/>
+  </select>
+
+  <select id="queryForList" resultMap="BaseResultMap">
+     select id, created_date, last_modified_date, version, found_date, logo, chinese_name,
+    english_name, description, url, sequence, mods
+    from brand
+    <include refid="sql_where"/>
+    limit #{startPage},#{pageSize}
+  </select>
+</mapper>

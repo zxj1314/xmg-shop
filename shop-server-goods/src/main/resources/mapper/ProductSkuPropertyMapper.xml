@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seemygo.server.goods.mapper.ProductSkuPropertyMapper">
+  <resultMap id="BaseResultMap" type="com.seemygo.shop.api.goods.domain.ProductSkuProperty">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_sku_id" jdbcType="BIGINT" property="productSkuId" />
+    <result column="value" jdbcType="VARCHAR" property="value" />
+    <result column="image" jdbcType="VARCHAR" property="image" />
+    <association column="sku_property_id" javaType="com.seemygo.shop.api.goods.domain.SkuProperty" property="skuProperty" select="com.seemygo.server.goods.mapper.SkuPropertyMapper.selectByPrimaryKey" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product_sku_property
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyProperty="id"  useGeneratedKeys="true">
+    insert into product_sku_property (product_sku_id, sku_property_id, value, 
+      image)
+    values (#{productSkuId,jdbcType=BIGINT}, #{skuProperty.id,jdbcType=BIGINT}, #{value,jdbcType=VARCHAR}, 
+      #{image,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" >
+    update product_sku_property
+    set product_sku_id = #{productSkuId,jdbcType=BIGINT},
+      sku_property_id = #{skuProperty.id,jdbcType=BIGINT},
+      value = #{value,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, product_sku_id, sku_property_id, value, image
+    from product_sku_property
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, product_sku_id, sku_property_id, value, image
+    from product_sku_property
+  </select>
+  <select id="selectByProductSkuId" resultMap="BaseResultMap">
+    select id, product_sku_id, sku_property_id, value, image
+    from product_sku_property
+    where product_sku_id = #{id,jdbcType=BIGINT}
+  </select>
+</mapper>

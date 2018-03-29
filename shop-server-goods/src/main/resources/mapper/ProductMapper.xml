@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.seemygo.server.goods.mapper.ProductMapper" >
+  <resultMap id="BaseResultMap" type="com.seemygo.shop.api.goods.domain.Product" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="created_date" property="createdDate" jdbcType="TIMESTAMP" />
+    <result column="last_modified_date" property="lastModifiedDate" jdbcType="TIMESTAMP" />
+    <result column="version" property="version" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="keyword" property="keyword" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+    <result column="market_price" property="marketPrice" jdbcType="DECIMAL" />
+    <result column="base_price" property="basePrice" jdbcType="DECIMAL" />
+    <result column="mods" property="mods" jdbcType="BIGINT" />
+    <result column="impressions" property="impressions" jdbcType="VARCHAR" />
+    <association property="brand" javaType="com.seemygo.shop.api.goods.domain.Brand" columnPrefix="b_">
+      <id property="id" column="id"/>
+      <result property="chineseName" column="chineseName"/>
+    </association>
+    <association property="catalog" javaType="com.seemygo.shop.api.goods.domain.Catalog" columnPrefix="c_">
+      <id property="id" column="id"/>
+      <result property="name" column="name"/>
+    </association>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from product
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert"  useGeneratedKeys="true" keyProperty="id" >
+    insert into product (created_date, last_modified_date, 
+      version, catalog_id, brand_id, 
+      name, keyword, code, 
+      image, market_price, base_price, 
+      mods, impressions)
+    values (#{createdDate,jdbcType=TIMESTAMP}, #{lastModifiedDate,jdbcType=TIMESTAMP}, 
+      #{version,jdbcType=INTEGER}, #{catalog.id,jdbcType=BIGINT}, #{brand.id,jdbcType=BIGINT},
+      #{name,jdbcType=VARCHAR}, #{keyword,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{image,jdbcType=VARCHAR}, #{marketPrice,jdbcType=DECIMAL}, #{basePrice,jdbcType=DECIMAL}, 
+      #{mods,jdbcType=BIGINT}, #{impressions,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.seemygo.shop.api.goods.domain.Product" >
+    update product
+    set created_date = #{createdDate,jdbcType=TIMESTAMP},
+      last_modified_date = #{lastModifiedDate,jdbcType=TIMESTAMP},
+      version = #{version,jdbcType=INTEGER},
+      catalog_id = #{catalog.id,jdbcType=BIGINT},
+      brand_id = #{brand.id,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      keyword = #{keyword,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR},
+      market_price = #{marketPrice,jdbcType=DECIMAL},
+      base_price = #{basePrice,jdbcType=DECIMAL},
+      mods = #{mods,jdbcType=BIGINT},
+      impressions = #{impressions,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT  p.id, p.created_date, p.last_modified_date, p.version,  p.name,
+    p.keyword, p.code, p.image, p.market_price, p.base_price, p.mods, p.impressions,
+    b.id AS b_id,b.chinese_name AS  b_chineseName,c.id AS c_id,c.name AS  c_name
+    FROM  product p
+    LEFT JOIN  brand b
+    on p.brand_id=b.id
+    LEFT JOIN catalog c
+    on p.catalog_id=c.id
+    where p.id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, created_date, last_modified_date, version, catalog_id, brand_id, name,
+    keyword, code, image, market_price, base_price, mods, impressions
+    from product
+  </select>
+
+  <sql id="base_where">
+    <where>
+      <if test="keyword!=null">
+        b.chinese_name LIKE concat('%',#{keyword},'%')
+        OR c.name LIKE concat('%',#{keyword},'%')
+        OR p.name LIKE concat('%',#{keyword},'%')
+      </if>
+    </where>
+  </sql>
+
+  <select id="queryForCount" resultType="int">
+    SELECT  count(p.id) FROM product p
+    LEFT JOIN  brand b
+    on p.brand_id=b.id
+    LEFT JOIN catalog c
+    on p.catalog_id=c.id
+    <include refid="base_where"/>
+  </select>
+
+  <select id="query" resultMap="BaseResultMap" >
+    SELECT  p.id, p.created_date, p.last_modified_date, p.version,  p.name,
+    p.keyword, p.code, p.image, p.market_price, p.base_price, p.mods, p.impressions,
+    b.id AS b_id,b.chinese_name AS  b_chineseName,c.id AS c_id,c.name AS  c_name
+    FROM  product p
+    LEFT JOIN  brand b
+    on p.brand_id=b.id
+    LEFT JOIN catalog c
+    on p.catalog_id=c.id
+    <include refid="base_where"/>
+    limit #{startPage},#{pageSize}
+
+  </select>
+</mapper>

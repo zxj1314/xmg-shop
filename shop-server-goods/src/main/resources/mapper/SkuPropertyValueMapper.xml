@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.seemygo.server.goods.mapper.SkuPropertyValueMapper" >
+  <resultMap id="BaseResultMap" type="com.seemygo.shop.api.goods.domain.SkuPropertyValue" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="value" property="value" jdbcType="VARCHAR" />
+    <result column="sequence" property="sequence" jdbcType="INTEGER" />
+    <association property="skuProperty" column="sku_property_id" javaType="com.seemygo.shop.api.goods.domain.SkuProperty"
+ 	select="com.seemygo.server.goods.mapper.SkuPropertyMapper.selectByPrimaryKey"/>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from sku_property_value
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByPropertyId" parameterType="java.lang.Long" >
+    delete from sku_property_value
+    where sku_property_id = #{propertyId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into sku_property_value (sku_property_id, value, sequence
+      )
+    values (#{skuProperty.id,jdbcType=BIGINT}, #{value,jdbcType=VARCHAR}, #{sequence,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" >
+    update sku_property_value
+    set sku_property_id = #{skuProperty.id,jdbcType=BIGINT},
+      value = #{value,jdbcType=VARCHAR},
+      sequence = #{sequence,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select id, sku_property_id, value, sequence
+    from sku_property_value
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, sku_property_id, value, sequence
+    from sku_property_value
+  </select>
+  
+  <select id="getSkuPropertyValue" resultMap="BaseResultMap" >
+    select id, sku_property_id, value, 
+    sequence
+    from sku_property_value where sku_property_id = #{skuPropertyId}
+  </select>
+</mapper>
