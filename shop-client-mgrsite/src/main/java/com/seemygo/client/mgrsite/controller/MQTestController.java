@@ -2,7 +2,7 @@ package com.seemygo.client.mgrsite.controller;
 
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.seemygo.shop.api.goods.service.IMQTestService;
+import com.seemygo.shop.api.goods.service.IMQTestProducerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 public class MQTestController {
 
     @Reference
-    private IMQTestService imqTestService;
+    private IMQTestProducerService imqTestService;
 
     @RequestMapping(value = "/mqtest",method = RequestMethod.GET)
     public void mqTest(HttpServletRequest request){

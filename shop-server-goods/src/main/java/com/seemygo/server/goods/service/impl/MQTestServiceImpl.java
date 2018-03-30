@@ -1,16 +1,15 @@
 package com.seemygo.server.goods.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.seemygo.shop.api.goods.service.IMQTestService;
+import com.seemygo.shop.api.goods.service.IMQTestProducerService;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 
 import javax.jms.Destination;
 
 @Service
-public class MQTestServiceImpl implements IMQTestService {
+public class MQTestServiceImpl implements IMQTestProducerService {
     //确定消息发送到哪个地点
     Destination destination = new ActiveMQQueue("mytest.queue");
 
