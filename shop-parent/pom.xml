@@ -77,6 +77,11 @@
             <version>1.12.4</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-activemq</artifactId>
+        </dependency>
     </dependencies>
     <!--Spring Boot项目-->
     <parent>
